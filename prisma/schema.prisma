@@ -1,0 +1,125 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  userId                  Int @id @default(autoincrement())
+  fullName                String
+  email                   String @unique
+  phone                   String
+  dob                     DateTime
+  isKid                   Boolean @default(false)
+  gender                  Gender?
+  locationId              Int
+  Location                Location @relation(fields: [locationId], references: [locationId]) //one-to-Many, one location many users
+  coachingPlanId          Int
+  coachingPlan            CoachingPlan @relation(fields: [coachingPlanId], references: [coachingPlanId]) //one-to-Many, one Plan many Users
+  password                String
+  role                    Roles
+  joinDate                DateTime @default(now())
+  planEndDate             DateTime?
+  planStartDate           DateTime?
+  membershipStatus        membershipStatus @default(active)
+  attendance              Attendance[]
+  payment                 Payment[]
+  otpVerificationCode     String @default("")
+  otpVerificationExpiry   DateTime @default(now())
+  isVerified              Boolean @default(false)
+  otpResetCode            String @default("")
+  otpResetExpiry          DateTime @default(now())
+
+}
+
+model Location {
+  locationId              Int @id @default(autoincrement())
+  name                    String @unique
+  address                 String
+  primaryUsers            User[]
+  coachingSchedule        CoachingSchedule[]
+}
+
+model CoachingPlan {
+  coachingPlanId          Int @id @default(autoincrement())
+  name                    String @unique
+  description             String
+  planDuration            String 
+  price                   Decimal
+  users                   User[]
+}
+
+model CoachingSchedule {
+  coachingScheduleId      Int @id @default(autoincrement())
+  coachingBatch           coachingBatch
+  coachingDays            String
+  startTime               String
+  endTime                 String
+  location                Location? @relation(fields: [locationId], references: [locationId])
+  locationId              Int
+  attendance              Attendance[]
+}
+
+model Attendance {
+  attendanceId            Int @id @default(autoincrement())
+  isStatus                AttendanceStatus
+  attendanceDate          DateTime
+  userId                  Int
+  coachingScheduleId      Int
+  user                    User @relation(fields: [userId], references: [userId])
+  coachingSchedule        CoachingSchedule @relation(fields: [coachingScheduleId], references: [coachingScheduleId])
+  @@unique([userId, coachingScheduleId, attendanceDate])
+}
+
+model Payment {
+  paymentId               Int @id @default(autoincrement())
+  userId                  Int
+  user                    User @relation(fields: [userId], references: [userId])
+  paymentDate             DateTime
+  paymentAmount           Int
+  isPaymentDone           paymentStatus @default(pending)
+  transactionDetails      String
+}
+
+enum AttendanceStatus {
+  present
+  absent
+}
+
+enum Roles {
+  admin
+  student
+  coach
+}
+
+enum membershipStatus {
+  active
+  inactive
+}
+
+enum Gender {
+  male
+  female
+  other
+}
+
+enum paymentStatus {
+  paid
+  pending
+}
+
+enum coachingBatch {
+  kidsStandard
+  kidsPremium
+  adultsStandard
+  adultsPremium
+}
