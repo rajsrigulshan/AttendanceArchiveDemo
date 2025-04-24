@@ -5,7 +5,7 @@ CREATE TYPE "AttendanceStatus" AS ENUM ('present', 'absent');
 CREATE TYPE "Roles" AS ENUM ('admin', 'student', 'coach');
 
 -- CreateEnum
-CREATE TYPE "membershipStatus" AS ENUM ('active', 'inactive');
+CREATE TYPE "membershipStatusValue" AS ENUM ('active', 'inactive');
 
 -- CreateEnum
 CREATE TYPE "Gender" AS ENUM ('male', 'female', 'other');
@@ -32,7 +32,7 @@ CREATE TABLE "User" (
     "joinDate" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "planEndDate" TIMESTAMP(3),
     "planStartDate" TIMESTAMP(3),
-    "membershipStatus" "membershipStatus" NOT NULL DEFAULT 'active',
+    "membershipStatus" "membershipStatusValue" NOT NULL DEFAULT 'active',
     "otpVerificationCode" TEXT NOT NULL DEFAULT '',
     "otpVerificationExpiry" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "isVerified" BOOLEAN NOT NULL DEFAULT false,

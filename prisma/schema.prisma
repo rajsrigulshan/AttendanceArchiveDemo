@@ -30,7 +30,7 @@ model User {
   joinDate                DateTime @default(now())
   planEndDate             DateTime?
   planStartDate           DateTime?
-  membershipStatus        membershipStatus @default(active)
+  membershipStatus        membershipStatusValue @default(active)
   attendance              Attendance[]
   payment                 Payment[]
   otpVerificationCode     String @default("")
@@ -69,6 +69,12 @@ model CoachingSchedule {
   attendance              Attendance[]
 }
 
+model SchedularLog{
+  schedularLogId Int @id @default(autoincrement())
+  schedularId Int
+  executedDate DateTime @unique
+}
+
 model Attendance {
   attendanceId            Int @id @default(autoincrement())
   isStatus                AttendanceStatus
@@ -101,7 +107,7 @@ enum Roles {
   coach
 }
 
-enum membershipStatus {
+enum membershipStatusValue {
   active
   inactive
 }

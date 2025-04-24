@@ -5,7 +5,7 @@ import fs from "node:fs/promises";
 
 const prisma = new PrismaClient();
 export async function InsertData(req, res) {
-    const filePath = "/Users/raj.gulshan/Documents/raj/AttendenceArchiveDemo/src/testData/seed.sql";
+    const filePath = "./src/testData/seed.sql";
 
     try {
 
@@ -15,7 +15,7 @@ export async function InsertData(req, res) {
             sqlScript = await fs.readFile(filePath, 'utf-8');
             console.log("Successfully read SQL script (first 50 chars):", sqlScript ? sqlScript.substring(0, 50) + "..." : "(empty)");
         } catch (error) {
-            console.error("Error reading file:", readError);
+            console.error("Error reading file:", error);
             res.status(500).send("Error reading SQL script file.");
             return;
 
