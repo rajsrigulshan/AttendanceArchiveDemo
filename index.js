@@ -4,7 +4,7 @@ import { taskSchedular } from "./src/service/scheduledAttendanceEntry.js";
 import { testSchedule } from "./src/service/testCron.js";
 const app = express();
 
-testSchedule();
+// testSchedule();
 taskSchedular();
 
 // testing express......

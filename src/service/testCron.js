@@ -3,7 +3,7 @@ import { PrismaClient } from "@prisma/client"
 
 const prism=new PrismaClient();
 
-const testSchedularFunction=(schedularId)=>{
+function testSchedularFunction(schedularId){
     console.log("I got triggered.....");
     console.log("name is", schedularId)
 
