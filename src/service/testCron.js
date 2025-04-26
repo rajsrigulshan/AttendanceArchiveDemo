@@ -10,7 +10,7 @@ function testSchedularFunction(schedularId){
 }
 
 export function testSchedule(){
-    const task=cron.schedule("* * * * * *",()=>testSchedularFunction("Task_1"),{
+    const task=cron.schedule("* * * * *",()=>testSchedularFunction("Task_1"),{
         name:"task 1"
     })
     
