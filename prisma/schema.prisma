@@ -83,7 +83,7 @@ model Attendance {
   coachingScheduleId      Int
   user                    User @relation(fields: [userId], references: [userId])
   coachingSchedule        CoachingSchedule @relation(fields: [coachingScheduleId], references: [coachingScheduleId])
-  @@unique([userId, coachingScheduleId, attendanceDate])
+  @@unique([userId,attendanceDate])
 }
 
 model Payment {
