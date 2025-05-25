@@ -23,22 +23,41 @@ model User {
   gender                  Gender?
   locationId              Int
   Location                Location @relation(fields: [locationId], references: [locationId]) //one-to-Many, one location many users
-  coachingPlanId          Int
-  coachingPlan            CoachingPlan @relation(fields: [coachingPlanId], references: [coachingPlanId]) //one-to-Many, one Plan many Users
   password                String
   role                    Roles
   joinDate                DateTime @default(now())
   planEndDate             DateTime?
   planStartDate           DateTime?
-  membershipStatus        membershipStatusValue @default(active)
+  membershipStatus        membershipStatus @default(active)
   attendance              Attendance[]
-  payment                 Payment[]
   otpVerificationCode     String @default("")
   otpVerificationExpiry   DateTime @default(now())
   isVerified              Boolean @default(false)
   otpResetCode            String @default("")
   otpResetExpiry          DateTime @default(now())
+  UserPlanInfo UserPlanInfo[]
+}
 
+
+
+model SchedularLog{
+  schedularLogId Int @id @default(autoincrement())
+  schedularId String 
+  executedDate DateTime @unique
+}
+
+
+model UserPlanInfo {
+  userPlanId              Int @id @default(autoincrement())
+  userId                  Int
+  user                    User @relation(fields: [userId], references: [userId])
+  coachingPlanId          Int
+  coachingPlan            CoachingPlan @relation(fields: [coachingPlanId], references: [coachingPlanId])
+  planStatus              Boolean
+  paymentId               Int @unique
+  payment                 Payment @relation(fields: [paymentId],references: [paymentId])
+  planStartDate           DateTime
+  planEndDate             DateTime
 }
 
 model Location {
@@ -55,7 +74,7 @@ model CoachingPlan {
   description             String
   planDuration            String 
   price                   Decimal
-  users                   User[]
+  UserPlanInfo UserPlanInfo[]
 }
 
 model CoachingSchedule {
@@ -66,39 +85,25 @@ model CoachingSchedule {
   endTime                 String
   location                Location? @relation(fields: [locationId], references: [locationId])
   locationId              Int
-  attendance              Attendance[]
-}
-
-model SchedularLog{
-  schedularLogId Int @id @default(autoincrement())
-  schedularId Int
-  executedDate DateTime @unique
 }
 
 model Attendance {
   attendanceId            Int @id @default(autoincrement())
-  isStatus                AttendanceStatus
+  isStatus                Boolean @default(false)
   attendanceDate          DateTime
   userId                  Int
-  coachingScheduleId      Int
+  coachingScheduleId      Int?
   user                    User @relation(fields: [userId], references: [userId])
-  coachingSchedule        CoachingSchedule @relation(fields: [coachingScheduleId], references: [coachingScheduleId])
-  @@unique([userId,attendanceDate])
+  @@unique([userId, attendanceDate])
 }
 
 model Payment {
   paymentId               Int @id @default(autoincrement())
-  userId                  Int
-  user                    User @relation(fields: [userId], references: [userId])
   paymentDate             DateTime
   paymentAmount           Int
-  isPaymentDone           paymentStatus @default(pending)
+  isPaymentDone           Boolean @default(false)
   transactionDetails      String
-}
-
-enum AttendanceStatus {
-  present
-  absent
+  UserPlanInfo            UserPlanInfo?
 }
 
 enum Roles {
@@ -107,7 +112,7 @@ enum Roles {
   coach
 }
 
-enum membershipStatusValue {
+enum membershipStatus {
   active
   inactive
 }
@@ -118,14 +123,9 @@ enum Gender {
   other
 }
 
-enum paymentStatus {
-  paid
-  pending
-}
-
 enum coachingBatch {
-  kidsStandard
-  kidsPremium
-  adultsStandard
-  adultsPremium
+  Kids_Standard
+  Kids_Premium
+  Adults_Standard
+  Adults_Premium
 }
